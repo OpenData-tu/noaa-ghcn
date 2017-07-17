@@ -1,10 +1,15 @@
 package edu.tu_berlin.ise.opendata.noaa_ghcn;
 
 import edu.tu_berlin.ise.opendata.FtpSource;
-import edu.tu_berlin.ise.opendata.noaa_ghcn.model.Measurement;
+import edu.tu_berlin.ise.opendata.noaa_ghcn.model.Adapter;
+import edu.tu_berlin.ise.opendata.noaa_ghcn.model.DailyMeasurement;
+import edu.tu_berlin.ise.opendata.noaa_ghcn.model.SourceFileLine;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -24,10 +29,19 @@ public class DailyImporter {
         final String filename = String.format("/pub/data/ghcn/daily/all/%s.dly", stationId);
 
         FtpSource ftpSource = new FtpSource(HOST);
-        List<Measurement> measurements =
+        Map<LocalDate, List<DailyMeasurement>> dailyMeasurements =
                 ftpSource.getStream(filename, "US-ASCII")
-                         .map(Measurement::deserialize)
-                         .collect(Collectors.toList());
+                         .map(SourceFileLine::deserialize)
+                         .map(Adapter::adapt)
+                         .flatMap(x -> Arrays.stream(x))
+                         .collect(Collectors.groupingBy(DailyMeasurement::getDate));
+
+        for (Map.Entry<LocalDate, List<DailyMeasurement>> kvp : dailyMeasurements.entrySet()) {
+            for (DailyMeasurement m : kvp.getValue()) {
+                System.out.println(kvp.getKey().toString() + ": " + m.getMeasurand() + " " + m.getValue().value);
+            }
+        }
+
     }
 
 }

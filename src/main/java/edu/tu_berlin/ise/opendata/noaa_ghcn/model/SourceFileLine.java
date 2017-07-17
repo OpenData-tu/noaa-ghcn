@@ -3,21 +3,22 @@ package edu.tu_berlin.ise.opendata.noaa_ghcn.model;
 /**
  * Created by aardila on 7/14/17.
  */
-public class Measurement {
-    public String id;
+public class SourceFileLine {
+    public String stationId;
     public int year;
     public int month;
     public String element;
     //public ElementTypes element;
-    public Value[] values;
+    public Value[] dailyValues;
 
-    public static Measurement deserialize(final String input) {
-        Measurement measurement = new Measurement();
-        measurement.id = input.substring(0,11);
-        measurement.year = Integer.parseInt(input.substring(11,15));
-        measurement.month = Integer.parseInt(input.substring(15,17));
-        measurement.element = input.substring(17,21);
+    public static SourceFileLine deserialize(final String input) {
+        SourceFileLine line = new SourceFileLine();
+        line.stationId = input.substring(0,11);
+        line.year = Integer.parseInt(input.substring(11,15));
+        line.month = Integer.parseInt(input.substring(15,17));
+        line.element = input.substring(17,21);
         //measurement.element = ElementTypes.valueOf(input.substring(17,21));
+
         final int valuesStartIndex = 21;
         final int valueLength = 8;
         final int lengthOfValues = input.length() - valuesStartIndex;
@@ -25,7 +26,7 @@ public class Measurement {
             return null;
         }
         final int numValues = lengthOfValues / valueLength;
-        measurement.values = new Value[numValues];
+        line.dailyValues = new Value[numValues];
 
         for (int i = 0; i < numValues; i++) {
             int offset = valuesStartIndex + (valueLength * i);
@@ -36,9 +37,9 @@ public class Measurement {
             value.mFlag = input.charAt(offset+5);
             value.qFlag = input.charAt(offset+6);
             value.sFlag = input.charAt(offset+7);
-            measurement.values[i] = value;
+            line.dailyValues[i] = value;
         }
 
-        return measurement;
+        return line;
     }
 }
