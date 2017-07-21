@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 /**
  * Created by aardila on 7/14/17.
  */
-public class DailyImporter {
+class StationDataImporter {
     private final static String HOST = "ftp.ncdc.noaa.gov";
-    private final static String FILE = "/pub/data/ghcn/daily/all/USW00023183.dly";
+    //private final static String FILE = "/pub/data/ghcn/daily/all/USW00023183.dly";
 
     public static void main(String[] args) throws IOException {
 
@@ -31,14 +31,14 @@ public class DailyImporter {
         FtpSource ftpSource = new FtpSource(HOST);
         Map<LocalDate, List<DailyMeasurement>> dailyMeasurements =
                 ftpSource.getStream(filename, "US-ASCII")
-                         .map(SourceFileLine::deserialize)
+                         .map(SourceFileLine::parse)
                          .map(Adapter::adapt)
-                         .flatMap(x -> Arrays.stream(x))
+                         .flatMap(Arrays::stream)
                          .collect(Collectors.groupingBy(DailyMeasurement::getDate));
 
         for (Map.Entry<LocalDate, List<DailyMeasurement>> kvp : dailyMeasurements.entrySet()) {
             for (DailyMeasurement m : kvp.getValue()) {
-                System.out.println(kvp.getKey().toString() + ": " + m.getMeasurand() + " " + m.getValue().value);
+                System.out.println(kvp.getKey().toString() + ": " + m.getMeasurand() + " " + m.getValue());
             }
         }
 

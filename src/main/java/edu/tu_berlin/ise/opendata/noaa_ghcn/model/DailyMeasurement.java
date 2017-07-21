@@ -6,18 +6,17 @@ import java.time.LocalDate;
  * Created by aardila on 7/17/17.
  */
 public class DailyMeasurement {
-    LocalDate date;
-    String stationId;
-    String measurand;
-    Value value;
+    private LocalDate date;
+    private String stationId;
+    private String measurand;
+    private Integer value;
+    private Character measurementFlag;
+    private Character qualityFlag;
+    private Character sourceFlag;
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public LocalDate getDate() { return date; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    public void setDate(LocalDate date) { this.date = date; }
 
     public String getStationId() {
         return stationId;
@@ -35,11 +34,31 @@ public class DailyMeasurement {
         this.measurand = measurand;
     }
 
-    public Value getValue() {
-        return value;
+    public Integer getValue() { return value; }
+
+    public void setValue(Integer value) { this.value = value; }
+
+    public Character getMeasurementFlag() {
+        return measurementFlag;
     }
 
-    public void setValue(Value value) {
-        this.value = value;
+    public void setMeasurementFlag(Character measurementFlag) {
+        this.measurementFlag = measurementFlag;
+    }
+
+    public Character getQualityFlag() {
+        return qualityFlag;
+    }
+
+    public void setQualityFlag(Character qualityFlag) {
+        this.qualityFlag = qualityFlag;
+    }
+
+    public Character getSourceFlag() {
+        return sourceFlag;
+    }
+
+    public void setSourceFlag(Character sourceFlag) {
+        this.sourceFlag = sourceFlag;
     }
 }
